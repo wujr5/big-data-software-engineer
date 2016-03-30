@@ -1,9 +1,6 @@
 #!/usr/bin/python
 
 import sys
-import json
-
-dict = {}
 
 for line in sys.stdin:
   data = line.strip().split(" ")
@@ -13,8 +10,7 @@ for line in sys.stdin:
       if path.endswith(".jpg"):
         pos = path.rfind("/")
         imageName = path[pos + 1:]
-        if imageName not in dict.keys():
-          dict[imageName] = []
-        dict[imageName].append(ip)
-
-print(json.dumps(dict))
+        if imageName != "primary-news-1.jpg":
+          print("b_"+imageName, "\t", ip)
+        else:
+          print("a_"+imageName, "\t", ip)

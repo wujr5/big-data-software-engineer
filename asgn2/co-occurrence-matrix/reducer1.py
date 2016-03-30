@@ -1,19 +1,30 @@
 #!/usr/bin/python
 
 import sys
-import json
 
-dict = None
+pn1_list = []
+temp_list = []
+
+oldName = None
 
 for line in sys.stdin:
-  dict = json.loads(line)
-  break
-
-PN1_LIST = dict["primary-news-1.jpg"]
-
-for key in dict:
-  if key == "primary-news-1.jpg":
+  data = line.strip().split("\t")
+  if len(data) != 2:
     continue
-  imgList = dict[key]
-  intersection = list(set(imgList) & set(PN1_LIST))
-  print(key, float(len(intersection)) / float(len(imgList)))
+  imageName, ip = data
+
+  if imageName[0:2] == "a_":
+    pn1_list.append(ip)
+    continue
+
+  if oldName != None and oldName != imageName:
+    intersection = [val for val in temp_list if val in pn1_list]
+    print(oldName[2:], float(len(intersection)) / float(len(temp_list)))
+    temp_list = []
+
+  temp_list.append(ip)
+  oldName = imageName
+
+if oldName is not None:
+  intersection = list(set(pn1_list) & set(temp_list))
+  print(oldName[2:], float(len(intersection)) / float(len(temp_list)))
